@@ -26,18 +26,12 @@
     (:meta :name "viewport" :content "width=device-width, initial-scale=1")
     (:link :rel "stylesheet" :type "text/css" :media "screen" :href "/css/pure-min.css")
     (:link :rel "stylesheet" :type "text/css" :media "screen" :href "/css/main.css")
-    (:h1 "Make Survey")
-    (:form :class "pure-form" :action "/create"
-           (:p "Data")
-           (:textarea :rows "25" :cols "80" :name "survey[data]" "")
-           (:br)
-           (:br)
-           (:button :type "submit" :class "pure-button" "Submit")))))
+    (:h1 "Hello World."))))
 
-;;
+
 ;; Error pages
-
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
-  (merge-pathnames #P"_errors/404.html"
-                   *template-directory*))
+  (cl-markup:html
+   (:body
+    (:p "Error, page not found."))))
