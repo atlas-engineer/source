@@ -8,10 +8,12 @@
                 :response-headers)
   (:import-from :datafly
                 :encode-json)
-  (:export :render
+  (:export :render-page
            :render-json))
 (in-package :source.view)
 
 (defun render-json (object)
   (setf (getf (response-headers *response*) :content-type) "application/json")
   (encode-json object))
+
+(defun render-page (object))
