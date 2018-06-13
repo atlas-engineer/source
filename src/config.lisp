@@ -17,14 +17,15 @@
 
 (defparameter *application-root*   (asdf:system-source-directory :source))
 (defparameter *static-directory*   (merge-pathnames #P"static/" *application-root*))
-(defparameter *template-directory* (merge-pathnames #P"templates/" *application-root*))
 
 (defconfig :common
   `(:databases ((:maindb :sqlite3 :database-name ":memory:"))))
 
 (defconfig |development|
-  '())
-
+  `(:debug T
+    :databases
+           ((:maindb :sqlite3 :database-name ,(merge-pathnames #P"database.db"
+                                                               *application-root*)))))
 (defconfig |production|
   '())
 
