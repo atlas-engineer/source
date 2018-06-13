@@ -26,12 +26,20 @@
 (defun initialize-database ()
   (with-connection (db)
     (datafly:execute
-     (sxql:create-table (:survey :if-not-exists t)
+     (sxql:create-table (:user :if-not-exists t)
          ((id :type 'integer
               :primary-key t
               :autoincrement t)
-          (data :type 'text))))
+          (username :type 'text)
+          (password :type 'text)
+          (email :type 'text))))))
+
+
+(defun create-administrator-account (username password email)
+  (with-connection (db)
     (datafly:execute
-     (sxql:create-table (:response :if-not-exists t)
-         ((survey_id :type 'integer)
-          (data :type 'text))))))
+     (sxql:insert-into :user
+       (sxql:set=
+        :username username
+        :password password
+        :email email)))))
