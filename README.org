@@ -8,6 +8,14 @@ repositories.
 * Tasks
 + Login/Logout (sessions) https://github.com/fukamachi/caveman#using-session
 + Hashing of Password
+#+NAME: hash password
+#+BEGIN_SRC lisp
+(defun hash-password (password)
+  (ironclad:byte-array-to-hex-string 
+   (ironclad:digest-sequence 
+    :sha256
+    (ironclad:ascii-string-to-byte-array password))))
+#+END_SRC
 + Creating Repositories
 + Deleting Repositories
 + Creating Users
