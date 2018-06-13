@@ -5,3 +5,9 @@ repositories.
 + Copy SSH keys to ~/.ssh/authorized_keys
 + Make bare remote git repository
 + Set remote to ssh://git@source.atlas.engineer/home/git/qr-video.git
+* Tasks
++ Login/Logout (sessions) https://github.com/fukamachi/caveman#using-session
++ Hashing of Password
++ Creating Repositories
++ Deleting Repositories
++ Creating Users
