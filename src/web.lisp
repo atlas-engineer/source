@@ -20,11 +20,19 @@
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
 
-;;
-;; Routing rules
-
 (defroute "/" ()
-  (render #P"index.html"))
+  (cl-markup:html
+   (:body
+    (:meta :name "viewport" :content "width=device-width, initial-scale=1")
+    (:link :rel "stylesheet" :type "text/css" :media "screen" :href "/css/pure-min.css")
+    (:link :rel "stylesheet" :type "text/css" :media "screen" :href "/css/main.css")
+    (:h1 "Make Survey")
+    (:form :class "pure-form" :action "/create"
+           (:p "Data")
+           (:textarea :rows "25" :cols "80" :name "survey[data]" "")
+           (:br)
+           (:br)
+           (:button :type "submit" :class "pure-button" "Submit")))))
 
 ;;
 ;; Error pages

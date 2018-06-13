@@ -1,6 +1,6 @@
 (defsystem "source"
   :version "0.1.0"
-  :author "John Mercouris"
+  :author "Atlas Engineer"
   :license ""
   :depends-on ("clack"
                "lack"
@@ -8,14 +8,8 @@
                "envy"
                "cl-ppcre"
                "uiop"
-
-               ;; for @route annotation
-               "cl-syntax-annot"
-
-               ;; HTML Template
-               "djula"
-
-               ;; for DB
+               "cl-markup"
+               "s-xml"
                "datafly"
                "sxql")
   :components ((:module "src"
