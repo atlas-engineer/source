@@ -1,0 +1,7 @@
+* Common Lisp Source Hosting Software
+Source is software that you can use to host your own remote
+repositories.
+* How to make a repository on a remote server
++ Copy SSH keys to ~/.ssh/authorized_keys
++ Make bare remote git repository
++ Set remote to ssh://git@source.atlas.engineer/home/git/qr-video.git
