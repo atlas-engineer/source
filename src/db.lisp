@@ -9,7 +9,8 @@
                 :connect-cached)
   (:export :connection-settings
            :db
-           :with-connection))
+           :with-connection
+           :hash-password))
 (in-package :source.db)
 
 (defun connection-settings (&optional (db :maindb))
@@ -21,6 +22,12 @@
 (defmacro with-connection (conn &body body)
   `(let ((*connection* ,conn))
      ,@body))
+
+(defun hash-password (password)
+  (ironclad:byte-array-to-hex-string 
+   (ironclad:digest-sequence 
+    :sha256
+    (ironclad:ascii-string-to-byte-array password))))
 
 ;; Initialize the database tables
 (defun initialize-database ()
@@ -41,5 +48,5 @@
      (sxql:insert-into :user
        (sxql:set=
         :username username
-        :password password
+        :password (hash-password password)
         :email email)))))

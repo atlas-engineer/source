@@ -8,6 +8,7 @@
                "envy"
                "cl-ppcre"
                "uiop"
+               "ironclad"
                "cl-markup"
                "s-xml"
                "datafly"
