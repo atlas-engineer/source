@@ -22,13 +22,13 @@
 
 (defroute "/" ()
   (render-page
-   (cl-markup:markup (:h1 "Hello Worlds."))))
+   (cl-markup:markup (:h1 "Source: The simple source repository."))))
 
 (defroute "/login" ()
   (render-page
    (cl-markup:markup
     (:h1 "Login")
-    (:form :class "pure-form" :action "/login_authentication"
+    (:form :class "pure-form" :action "/login/authenticate"
            (:p "Username")
            (:input :type "text" :name "login[username]")
            (:p "Password")
@@ -37,7 +37,7 @@
            (:br)
            (:button :type "submit" :class "pure-button" "Submit")))))
 
-(defroute "/login_authentication" (&key _parsed)
+(defroute "/login/authenticate" (&key _parsed)
   (let* ((credentials (car _parsed))
              (username (cdadr credentials))
              (password (hash-password (cdaddr credentials))))
@@ -74,6 +74,28 @@
       (render-page
        (cl-markup:markup
         (:h1 "You are not logged in.")))))
+
+(defroute "/create/repository" ()
+  (if (gethash :logged-in *session*)
+      (render-page
+       (cl-markup:markup
+        (:h1 "Create Repository")
+        (:form :class "pure-form" :action "/create/repository/process"
+           (:p "Name")
+           (:input :type "text" :name "repository[name]")
+           (:br)
+           (:br)
+           (:button :type "submit" :class "pure-button" "Create"))))
+      (render-page
+       (cl-markup:markup
+        (:h1 "You must be logged in.")))))
+
+
+(defroute "/create/repository/process" (&key _parsed)
+  (print _parsed)
+  (render-page
+   (cl-markup:markup
+    (:h1 "Repository created"))))
 
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))
