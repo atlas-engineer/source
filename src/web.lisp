@@ -24,18 +24,36 @@
   (render-page
    (cl-markup:markup (:h1 "Hello Worlds."))))
 
-(defroute "/login" (&key _parsed)
+(defroute "/login" ()
   (render-page
    (cl-markup:markup
     (:h1 "Login")
-    (:form :class "pure-form" :action "/login"
+    (:form :class "pure-form" :action "/login_authentication"
            (:p "Username")
            (:input :type "text" :name "login[username]")
            (:p "Password")
-           (:input :type "text" :name "login[password]")
+           (:input :type "password" :name "login[password]")
            (:br)
            (:br)
            (:button :type "submit" :class "pure-button" "Submit")))))
+
+(defroute "/login_authentication" (&key _parsed)
+  (let* ((credentials (car _parsed))
+             (username (cdadr credentials))
+             (password (hash-password (cdaddr credentials))))
+        (with-connection (db)
+          (let ((login-matched
+                  (retrieve-one-value
+                   (select :username
+                     (from :user)
+                     (where (:and
+                             (:= :username username)
+                             (:= :password password)))))))
+            (if login-matched
+                (render-page
+                 (cl-markup:markup (:h1 (concatenate 'string "Login Successful: " username))))
+                (render-page
+                 (cl-markup:markup (:h1 "Login Failed."))))))))
 
 (defroute "/logout" ()
   (render-page
