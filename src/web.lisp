@@ -50,15 +50,30 @@
                              (:= :username username)
                              (:= :password password)))))))
             (if login-matched
+                (progn
+                  (setf (gethash :logged-in *session*) t)
+                  (print (gethash :logged-in *session*))
+                  (render-page
+                   (cl-markup:markup (:h1 (concatenate 'string "Login successful: " username)))))
                 (render-page
-                 (cl-markup:markup (:h1 (concatenate 'string "Login Successful: " username))))
-                (render-page
-                 (cl-markup:markup (:h1 "Login Failed."))))))))
+                 (cl-markup:markup (:h1 "Login failed."))))))))
 
 (defroute "/logout" ()
-  (render-page
-   (cl-markup:markup
-    (:h1 "Logged Out."))))
+  (if (gethash :logged-in *session*)
+      ;;;;;;;;;;;;;;;;;;;;;;
+      ;; Log out the user ;;
+      ;;;;;;;;;;;;;;;;;;;;;;
+      (progn
+        (setf (gethash :logged-in *session*) nil)
+        (render-page
+         (cl-markup:markup
+          (:h1 "Logged out."))))
+      ;;;;;;;;;;;;;;;;;;;;;;;;;
+      ;; User not logged in  ;;
+      ;;;;;;;;;;;;;;;;;;;;;;;;;
+      (render-page
+       (cl-markup:markup
+        (:h1 "You are not logged in.")))))
 
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))
