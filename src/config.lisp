@@ -15,8 +15,12 @@
 
 (setf (config-env-var) "APP_ENV")
 
-(defparameter *application-root*   (asdf:system-source-directory :source))
-(defparameter *static-directory*   (merge-pathnames #P"static/" *application-root*))
+(defparameter *application-root*
+  (asdf:system-source-directory :source))
+(defparameter *static-directory*
+  (merge-pathnames #P"static/" *application-root*))
+(defparameter *repository-directory*
+  (merge-pathnames #P"repository/" *application-root*))
 
 (defconfig :common
   `(:databases ((:maindb :sqlite3 :database-name ":memory:"))))
@@ -24,8 +28,9 @@
 (defconfig |development|
   `(:debug T
     :databases
-           ((:maindb :sqlite3 :database-name ,(merge-pathnames #P"database.db"
-                                                               *application-root*)))))
+           ((:maindb :sqlite3 :database-name
+                     ,(merge-pathnames #P"database.db"
+                                       *application-root*)))))
 (defconfig |production|
   '())
 

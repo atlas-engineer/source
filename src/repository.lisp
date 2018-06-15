@@ -1,6 +1,7 @@
-;;; repository.lisp --- classes and functions for creation and management of repositories
+;;; repository.lisp --- classes and functions for creation and
+;;; management of repositories
 
-(in-package :survey.web)
+(in-package :source.web)
 
 (defun create-repository (name))
 

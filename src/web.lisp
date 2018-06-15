@@ -54,7 +54,10 @@
                   (setf (gethash :logged-in *session*) t)
                   (print (gethash :logged-in *session*))
                   (render-page
-                   (cl-markup:markup (:h1 (concatenate 'string "Login successful: " username)))))
+                   (cl-markup:markup
+                    (:h1 (concatenate 'string
+                                      "Login successful: "
+                                      username)))))
                 (render-page
                  (cl-markup:markup (:h1 "Login failed."))))))))
 
