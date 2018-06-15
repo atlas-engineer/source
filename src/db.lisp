@@ -39,8 +39,13 @@
               :autoincrement t)
           (username :type 'text)
           (password :type 'text)
-          (email :type 'text))))))
-
+          (email :type 'text))))
+    (datafly:execute
+     (sxql:create-table (:repository :if-not-exists t)
+         ((id :type 'integer
+              :primary-key t
+              :autoincrement t)
+          (name :type 'text))))))
 
 (defun create-administrator-account (username password email)
   (with-connection (db)
