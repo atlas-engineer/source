@@ -4,13 +4,13 @@
 
 (in-package :source.web)
 
-(defun create-repository (path)
+(defun create-repository-folder (path)
   (uiop:run-program
    (list "git" "init" "--bare"
          (uiop:unix-namestring
           path))))
 
-(defun delete-repository (path)
+(defun delete-repository-folder (path)
   (uiop:run-program
    (list "rm" "-rf"
          (uiop:unix-namestring
