@@ -10,9 +10,6 @@
   (:export :*web*))
 (in-package :source.web)
 
-;;
-;; Application
-
 (defclass <web> (<app>) ())
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
