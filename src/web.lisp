@@ -10,9 +10,6 @@
   (:export :*web*))
 (in-package :source.web)
 
-;; for @route annotation
-(syntax:use-syntax :annot)
-
 ;;
 ;; Application
 
