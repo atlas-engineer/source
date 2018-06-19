@@ -46,7 +46,7 @@
               :primary-key t
               :autoincrement t)
           (name :type 'text)
-          (public :type 'boolean))))))
+          (public :type 'integer))))))
 
 (defun create-administrator-account (username password email)
   (with-connection (db)
