@@ -80,16 +80,19 @@
         (:form :class "pure-form" :action "/create/repository/process"
            (:p "Name")
            (:input :type "text" :name "repository[name]")
-           (:br)
+           (:p "Public Visibility "
+               (:input :type "checkbox" :name "repository[public]"))
            (:br)
            (:button :type "submit" :class "pure-button" "Create"))))
       (render-page
        (cl-markup:markup
         (:h1 "You must be logged in.")))))
 
-
 (defroute "/create/repository/process" (&key _parsed)
-  (print _parsed)
+  (let* ((parsed (rest (car _parsed)))
+         (name (cdr (assoc "name" parsed :test #'equalp)))
+         (public (cdr (assoc "public" parsed :test #'equalp))))
+    (create-repository name public))
   (render-page
    (cl-markup:markup
     (:h1 "Repository created"))))
