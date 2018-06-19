@@ -4,6 +4,16 @@
 
 (in-package :source.web)
 
+(defun create-repository (name public)
+  (create-repository-folder
+   (merge-pathnames name source.config::*repository-directory*))
+  (with-connection (db)
+    (execute
+     (insert-into :repository
+       (set=
+        :name name
+        :public (if public 1 0))))))
+
 (defun create-repository-folder (path)
   (uiop:run-program
    (list "git" "init" "--bare"
