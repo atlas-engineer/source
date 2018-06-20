@@ -101,6 +101,23 @@
    (cl-markup:markup
     (:h1 "Repository created"))))
 
+(defroute "/view/repository/:repository" (&key repository)
+  (render-page
+   (cl-markup:markup
+    (:h1 repository)
+    (:p (concatenate 'string
+                     source.config::*git-url-base*
+                     repository))
+    (:p (:a :href (concatenate 'string
+                               "/delete/repository/"
+                               repository)
+            "Delete Repository")))))
+
+(defroute "/delete/repository/:repository" (&key repository)
+  (render-page
+   (cl-markup:markup
+    (:h1 (concatenate 'string "Delete repository? " repository)))))
+
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
