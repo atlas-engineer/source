@@ -15,12 +15,23 @@
 
 (setf (config-env-var) "APP_ENV")
 
+(defparameter *domain*
+  "domain.com")
+(defparameter *git-user*
+  "git" "Git user created specifically for this application")
 (defparameter *application-root*
   (asdf:system-source-directory :source))
 (defparameter *static-directory*
   (merge-pathnames #P"static/" *application-root*))
 (defparameter *repository-directory*
   (merge-pathnames #P"repository/" *application-root*))
+(defparameter *git-url-base*
+  (concatenate 'string
+               "ssh://"
+               *git-user*
+               "@"
+               *domain*
+               (uiop:unix-namestring *repository-directory*)))
 
 (defconfig :common
   `(:databases ((:maindb :sqlite3 :database-name ":memory:"))))
