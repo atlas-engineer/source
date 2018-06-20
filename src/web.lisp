@@ -19,17 +19,21 @@
    (cl-markup:markup (:h1 "Source: The simple source repository."))))
 
 (defroute "/login" ()
-  (render-page
-   (cl-markup:markup
-    (:h1 "Login")
-    (:form :class "pure-form" :action "/login/authenticate"
-           (:p "Username")
-           (:input :type "text" :name "login[username]")
-           (:p "Password")
-           (:input :type "password" :name "login[password]")
-           (:br)
-           (:br)
-           (:button :type "submit" :class "pure-button" "Submit")))))
+  (if (gethash :logged-in *session*)
+      (render-page
+       (cl-markup:markup
+        (:h1 "You are logged in.")))
+      (render-page
+       (cl-markup:markup
+        (:h1 "Login")
+        (:form :class "pure-form" :action "/login/authenticate"
+               (:p "Username")
+               (:input :type "text" :name "login[username]")
+               (:p "Password")
+               (:input :type "password" :name "login[password]")
+               (:br)
+               (:br)
+               (:button :type "submit" :class "pure-button" "Submit"))))))
 
 (defroute "/login/authenticate" (&key _parsed)
   (let* ((credentials (car _parsed))
