@@ -16,7 +16,10 @@
 
 (defroute "/" ()
   (render-page
-   (cl-markup:markup (:h1 "Source: The simple source repository."))))
+   (cl-markup:markup
+    (:h1 "Source: The simple source repository.")
+    (:h2 "Public Repositories:")
+    (:h2 "Private Repositories:"))))
 
 (defroute "/login" ()
   (if (gethash :logged-in *session*)
