@@ -105,9 +105,11 @@
   (render-page
    (cl-markup:markup
     (:h1 repository)
+    (:h2 "Url")
     (:p (concatenate 'string
                      source.config::*git-url-base*
                      repository))
+    (:h2 "Operations")
     (:p (:a :href (concatenate 'string
                                "/delete/repository/"
                                repository)
