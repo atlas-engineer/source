@@ -40,7 +40,7 @@
           (username :type 'text :unique t)
           (password :type 'text)
           (email :type 'text)
-          (public_key :type 'text))))
+          (public-key :type 'text))))
     (datafly:execute
      (sxql:create-table (:repository :if-not-exists t)
          ((id :type 'integer

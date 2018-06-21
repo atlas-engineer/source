@@ -162,9 +162,41 @@
         (:h1 "You must be logged in.")))))
 
 (defroute "/configure/account" ()
-  (render-page
-   (cl-markup:markup
-    (:h1 "Account Settings"))))
+  (with-connection (db)
+    (let* ((username (gethash :username *session* ""))
+           (public-key (retrieve-one-value
+                       (select :public-key
+                         (from :user)
+                         (where (:= :username username))))))
+      (render-page
+       (cl-markup:markup
+        (:h1 "Account Settings")
+        (:form :class "pure-form" :action "/update/account"
+               (:p "Public Key")
+               (:input :type "text" :name "account[public-key]"
+                       :placeholder public-key)
+               (:br)
+               (:br)
+               (:button :type "submit" :class "pure-button" "Update")))))))
+
+(defroute "/update/account" (&key _parsed)
+  (with-connection (db)
+    (let* ((username (gethash :username *session* ""))
+           (parsed (rest (car _parsed)))
+           (new-public-key (cdr (assoc "public-key" parsed :test #'equalp)))
+           (old-public-key (retrieve-one-value
+                            (select :public-key
+                              (from :user)
+                              (where (:= :username username))))))
+      (delete-key-from-authorized-keys old-public-key)
+      (add-key-to-authorized-keys new-public-key)
+      (execute
+       (update :user
+         (set= :public-key new-public-key)
+         (where (:= :username username))))
+      (render-page
+       (cl-markup:markup
+        (:h1 "Account Updated."))))))
 
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))
