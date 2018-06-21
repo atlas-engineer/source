@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+@media all and (min-width: 512px){
+    .pure-menu-horizontal {
+        background-color: rgb(252, 252, 252);
+    }
+}
+
 body {
     padding:1.5em;
 }
