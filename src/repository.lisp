@@ -25,3 +25,14 @@
    (list "rm" "-rf"
          (uiop:unix-namestring
           path))))
+
+(defun list-repositories (public)
+  (with-connection (db)
+    (let* ((public-int (if public 1 0))
+           (repositories
+            (retrieve-all
+             (select :name
+               (from :repository)
+               (where (:= :public public-int))))))
+      (loop for repository in repositories
+            collect (cadr repository)))))

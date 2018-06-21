@@ -15,11 +15,20 @@
 (clear-routing-rules *web*)
 
 (defroute "/" ()
-  (render-page
-   (cl-markup:markup
-    (:h1 "Source: The simple source repository.")
-    (:h2 "Public Repositories:")
-    (:h2 "Private Repositories:"))))
+  (let ((repositories (if (gethash :logged-in *session*)
+                          (union (list-repositories t)
+                                 (list-repositories nil))
+                          (list-repositories t))))
+    (render-page
+     (cl-markup:markup
+      (:h1 "Source: The simple source repository.")
+      (:h2 "Repositories:")
+      (:ul
+       (loop for repository in repositories
+             collect
+             (cl-markup:markup
+              (:li (:a :href (concatenate 'string "/view/repository/" repository)
+                       repository)))))))))
 
 (defroute "/login" ()
   (if (gethash :logged-in *session*)
@@ -85,7 +94,7 @@
        (cl-markup:markup
         (:h1 "Create Repository")
         (:form :class "pure-form" :action "/create/repository/process"
-           (:p "Name")
+           (:p "Name ([A-Za-z0-9_-]+)")
            (:input :type "text" :name "repository[name]")
            (:p "Public Visibility "
                (:input :type "checkbox" :name "repository[public]"))

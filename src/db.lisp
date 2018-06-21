@@ -48,7 +48,7 @@
           (name :type 'text)
           (public :type 'integer))))))
 
-(defun create-administrator-account (username password email)
+(defun create-account (username password email)
   (with-connection (db)
     (datafly:execute
      (sxql:insert-into :user
