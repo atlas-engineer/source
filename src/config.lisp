@@ -24,7 +24,7 @@
 (defparameter *static-directory*
   (merge-pathnames #P"static/" *application-root*))
 (defparameter *repository-directory*
-  (merge-pathnames #P"repository/" *application-root*))
+  (make-pathname :directory '(:absolute "home" *git-user*)))
 (defparameter *git-url-base*
   (concatenate 'string
                "ssh://"
@@ -33,10 +33,8 @@
                *domain*
                (uiop:unix-namestring *repository-directory*)))
 (defparameter *authorized-keys-path*
-    (concatenate 'string
-                 "/home/"
-                 *git-user*
-                 "/.ssh/authorized_keys"))
+  (make-pathname :directory '(:absolute "home" *git-user* ".ssh")
+                 :name "authorized_keys"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Allow special user configuration via an init file ;;
