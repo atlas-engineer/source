@@ -131,16 +131,33 @@
                            repository))
           (:h2 "Operations")
           (:p (:a :href (concatenate 'string
-                                     "/delete/repository/"
+                                     "/delete/repository/confirm/"
                                      repository) "Delete Repository"))))
         (render-page
          (cl-markup:markup
           (:h1 "Repository does not exist."))))))
 
+(defroute "/delete/repository/confirm/:repository" (&key repository)
+  (if (gethash :logged-in *session*)
+      (render-page
+       (cl-markup:markup
+        (:h1 (concatenate 'string "Delete repository? " repository))
+        (:a :href (concatenate 'string "/delete/repository/" repository)
+            "Click here to confirm deletion.")))
+      (render-page
+       (cl-markup:markup
+        (:h1 "You must be logged in.")))))
+
 (defroute "/delete/repository/:repository" (&key repository)
-  (render-page
-   (cl-markup:markup
-    (:h1 (concatenate 'string "Delete repository? " repository)))))
+  (if (gethash :logged-in *session*)
+      (progn
+        (delete-repository repository)
+        (render-page
+         (cl-markup:markup
+          (:h1 "Repository deleted."))))
+      (render-page
+       (cl-markup:markup
+        (:h1 "You must be logged in.")))))
 
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))

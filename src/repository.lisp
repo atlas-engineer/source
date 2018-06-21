@@ -14,6 +14,13 @@
         :name name
         :public (if public 1 0))))))
 
+(defun delete-repository (name)
+  (delete-repository-folder
+   (merge-pathnames name source.config::*repository-directory*))
+  (with-connection (db)
+    (execute (delete-from :repository
+               (where (:= :name name))))))
+
 (defun create-repository-folder (path)
   (uiop:run-program
    (list "git" "init" "--bare"
