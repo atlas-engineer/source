@@ -5,21 +5,21 @@
 (in-package :source.web)
 
 (defun create-repository (name public)
-  (create-repository-folder
-   (merge-pathnames name source.config::*repository-directory*))
   (with-connection (db)
     (execute
      (insert-into :repository
        (set=
         :name name
-        :public (if public 1 0))))))
+        :public (if public 1 0)))))
+  (create-repository-folder
+   (merge-pathnames name source.config::*repository-directory*)))
 
 (defun delete-repository (name)
-  (delete-repository-folder
-   (merge-pathnames name source.config::*repository-directory*))
   (with-connection (db)
     (execute (delete-from :repository
-               (where (:= :name name))))))
+               (where (:= :name name)))))
+  (delete-repository-folder
+   (merge-pathnames name source.config::*repository-directory*)))
 
 (defun create-repository-folder (path)
   (uiop:run-program
