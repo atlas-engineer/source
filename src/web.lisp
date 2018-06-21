@@ -188,8 +188,8 @@
                             (select :public-key
                               (from :user)
                               (where (:= :username username))))))
-      (delete-key-from-authorized-keys old-public-key)
       (add-key-to-authorized-keys new-public-key)
+      (delete-key-from-authorized-keys old-public-key)
       (execute
        (update :user
          (set= :public-key new-public-key)
