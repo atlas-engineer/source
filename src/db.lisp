@@ -37,7 +37,7 @@
          ((id :type 'integer
               :primary-key t
               :autoincrement t)
-          (username :type 'text)
+          (username :type 'text :unique t)
           (password :type 'text)
           (email :type 'text))))
     (datafly:execute
@@ -45,7 +45,7 @@
          ((id :type 'integer
               :primary-key t
               :autoincrement t)
-          (name :type 'text)
+          (name :type 'text :unique t)
           (public :type 'integer))))))
 
 (defun create-account (username password email)
