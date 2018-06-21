@@ -117,7 +117,7 @@
   (render-page
    (cl-markup:markup
     (:h1 repository)
-    (:h2 "Url")
+    (:h2 "URL")
     (:p (concatenate 'string
                      source.config::*git-url-base*
                      repository))
