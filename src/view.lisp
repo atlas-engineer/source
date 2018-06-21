@@ -27,7 +27,10 @@
                        "Login"))
               (:li :class "pure-menu-item"
                    (:a :href "/logout" :class "pure-menu-link"
-                       "Logout"))))))
+                       "Logout"))
+              (:li :class "pure-menu-item"
+                   (:a :href "/configure/account" :class "pure-menu-link"
+                       "Account"))))))
 
 (defun render-json (object)
   (setf (getf (response-headers *response*) :content-type) "application/json")

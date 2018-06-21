@@ -62,6 +62,7 @@
             (if login-matched
                 (progn
                   (setf (gethash :logged-in *session*) t)
+                  (setf (gethash :username *session*) username)
                   (print (gethash :logged-in *session*))
                   (render-page
                    (cl-markup:markup
@@ -78,6 +79,7 @@
       ;;;;;;;;;;;;;;;;;;;;;;
       (progn
         (setf (gethash :logged-in *session*) nil)
+        (setf (gethash :username *session*) nil)
         (render-page
          (cl-markup:markup
           (:h1 "Logged out."))))
@@ -158,6 +160,11 @@
       (render-page
        (cl-markup:markup
         (:h1 "You must be logged in.")))))
+
+(defroute "/configure/account" ()
+  (render-page
+   (cl-markup:markup
+    (:h1 "Account Settings"))))
 
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))
