@@ -56,3 +56,10 @@
         :username username
         :password (hash-password password)
         :email email)))))
+
+(defun set-password (username password)
+  (with-connection (db)
+    (datafly:execute
+     (sxql:update :user
+       (sxql:set= :password (hash-password password))
+       (sxql:where (:= :username username))))))
