@@ -47,7 +47,7 @@
    (merge-pathnames
     (make-pathname :directory '(:relative "source"))
     (uiop:xdg-config-home))))
-(defvar *init-file-path* (xdg-config-home "init.lisp")
+(defvar *init-file-path* (xdg-config-home "init.lisp"))
 (load *init-file-path* :if-does-not-exist nil)
 
 (defconfig :common
