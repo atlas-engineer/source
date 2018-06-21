@@ -114,18 +114,28 @@
     (:h1 "Repository created"))))
 
 (defroute "/view/repository/:repository" (&key repository)
-  (render-page
-   (cl-markup:markup
-    (:h1 repository)
-    (:h2 "URL")
-    (:p (concatenate 'string
-                     source.config::*git-url-base*
-                     repository))
-    (:h2 "Operations")
-    (:p (:a :href (concatenate 'string
-                               "/delete/repository/"
-                               repository)
-            "Delete Repository")))))
+  (let ((repository-public?
+          (with-connection (db)
+            (retrieve-one (select :public
+                            (from :repository)
+                            (where (:= :name repository))))))
+        (logged-in (gethash :logged-in *session*)))
+    (if (or (equal 1 (cadr repository-public?))
+            (and logged-in repository-public?))
+        (render-page
+         (cl-markup:markup
+          (:h1 repository)
+          (:h2 "URL")
+          (:p (concatenate 'string
+                           source.config::*git-url-base*
+                           repository))
+          (:h2 "Operations")
+          (:p (:a :href (concatenate 'string
+                                     "/delete/repository/"
+                                     repository) "Delete Repository"))))
+        (render-page
+         (cl-markup:markup
+          (:h1 "Repository does not exist."))))))
 
 (defroute "/delete/repository/:repository" (&key repository)
   (render-page
