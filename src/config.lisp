@@ -18,7 +18,7 @@
 (defparameter *domain*
   "domain.com")
 (defparameter *git-user*
-  "git" "Git user created specifically for this application")
+  "git" "User created specifically for this application")
 (defparameter *application-root*
   (asdf:system-source-directory :source))
 (defparameter *static-directory*
@@ -32,6 +32,23 @@
                "@"
                *domain*
                (uiop:unix-namestring *repository-directory*)))
+(defparameter *authorized-keys-path*
+    (concatenate 'string
+                 "/home/"
+                 *git-user*
+                 "/.ssh/authorized_keys"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Allow special user configuration via an init file ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun xdg-config-home (&optional (file-name ""))
+  (merge-pathnames
+   file-name
+   (merge-pathnames
+    (make-pathname :directory '(:relative "source"))
+    (uiop:xdg-config-home))))
+(defvar *init-file-path* (xdg-config-home "init.lisp")
+(load *init-file-path* :if-does-not-exist nil)
 
 (defconfig :common
   `(:databases ((:maindb :sqlite3 :database-name ":memory:"))))
