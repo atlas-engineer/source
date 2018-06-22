@@ -157,9 +157,8 @@
         (render-page
          (cl-markup:markup
           (:h1 "Account Settings")
-          (:p "Only enter information for the fields you wish to
-          update, current password is required to update any/all
-          fields.")
+          (:p "Only enter information for updated fields. Current
+          password is required to update any/all fields.")
           (:form :class "pure-form" :action "/update/account"
                  (:p "Public Key")
                  (:input :type "text" :name "account[public-key]"
