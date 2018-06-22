@@ -114,5 +114,8 @@ change, and their defaults.
 + Set remote to ssh://git@source.atlas.engineer/home/git/path.git
 + Using a =.git= suffix is only convention, it is not integral to the
   creation of a bare repository
-* Future
+* Future Improvements
 + Allow ability for individuals to clone and download public repositories
++ Install Script for FreeBSD
++ Run Script for "one-click" run
++ Unit testing
