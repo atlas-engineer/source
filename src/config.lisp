@@ -16,9 +16,9 @@
 (setf (config-env-var) "APP_ENV")
 
 (defparameter *domain*
-  "domain.com")
+  "domain.com" "Domain the software is hosted on.")
 (defparameter *git-user*
-  "git" "User created specifically for this application")
+  "git" "User created specifically for this application.")
 (defparameter *application-root*
   (asdf:system-source-directory :source))
 (defparameter *static-directory*
@@ -26,11 +26,7 @@
 (defparameter *repository-directory*
   (make-pathname :directory (list :absolute "home" *git-user*)))
 (defparameter *git-url-base*
-  (concatenate 'string
-               "ssh://"
-               *git-user*
-               "@"
-               *domain*
+  (concatenate 'string "ssh://" *git-user* "@" *domain*
                (uiop:unix-namestring *repository-directory*)))
 (defparameter *authorized-keys-path*
   (make-pathname :directory (list :absolute "home" *git-user* ".ssh")
