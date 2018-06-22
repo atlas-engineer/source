@@ -80,7 +80,6 @@ this, you can do something like the following:
 + ~(setf (osicat:environment-variable "APP_ENV") "production")~
 + ...
 
-
 ** Interesting Configuration Variables
 The list below includes configuration variables you may wish to
 change, and their defaults.
@@ -108,7 +107,6 @@ change, and their defaults.
   (make-pathname :directory (list :absolute "home" *git-user* ".ssh")
                  :name "authorized_keys"))
 #+END_SRC
-
 
 * How to manually make a repository on a remote server
 + Copy SSH keys to ~/.ssh/authorized_keys
