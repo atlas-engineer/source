@@ -43,3 +43,9 @@
                (where (:= :public public-int))))))
       (loop for repository in repositories
             collect (cadr repository)))))
+
+(defun get-repository-visibility (repository)
+  (with-connection (db)
+    (retrieve-one (select :public
+                    (from :repository)
+                    (where (:= :name repository))))))
