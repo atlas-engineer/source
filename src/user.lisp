@@ -11,7 +11,6 @@
       (loop for line in lines do
         (when (and (not (equalp key line))
                    (not (equalp line "")))
-          (print line)
           (write-sequence line f)
           (write-char #\newline f))))))
 
@@ -22,3 +21,10 @@
                      :if-does-not-exist :create)
     (write-char #\newline f)
     (write-sequence key f)))
+
+(defun update-user (username field value)
+  (unless (or (not value) (equal "" value))
+    (with-connection (db)
+      (execute (update :user
+                 (set= field value)
+                 (where (:= :username username)))))))
