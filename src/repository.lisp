@@ -25,6 +25,11 @@
   (uiop:run-program
    (list "git" "init" "--bare"
          (uiop:unix-namestring
+          path)))
+  (uiop:run-program
+   (list "chown" "-R"
+         (concatenate 'string source.config::*git-user* ":" source.config::*git-user*)
+         (uiop:unix-namestring
           path))))
 
 (defun delete-repository-folder (path)
