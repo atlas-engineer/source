@@ -13,6 +13,7 @@
            :hash-password))
 (in-package :source.db)
 
+
 (defun connection-settings (&optional (db :maindb))
   (cdr (assoc db (config :databases))))
 
