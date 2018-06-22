@@ -1,21 +1,120 @@
-* Common Lisp Source Hosting Software
-Source is software that you can use to host your own remote
+* SOURCE: Common Lisp Source Hosting Software
+SOURCE is software that you can use to host your own remote
 repositories.
-* How to make a repository on a remote server
+* Installation
+** Installing a Lisp Implementation
+One of the following Lisp implementations is recommended for usage
+with SOURCE.
+
++ Download CCL: [[https://ccl.clozure.com/download.html]], full
+  installation instructions can be found here:
+  [[https://ccl.clozure.com/install.html]].
++ Download SBCL: [[http://sbcl.org/platform-table.html]], full
+  installation instructions can be found here:
+  [[http://sbcl.org/getting.html]].
+
+If you are on FreeBSD it is recommended that you build SBCL from the
+ports collection to get the newest version of SBCL and ASDF.
+
+** Installing Quicklisp
+The official quicklisp website can provide updated links
+to downloads, and instructions:
+
+https://www.quicklisp.org
+
+To install quicklisp:
+
+- Download https://beta.quicklisp.org/quicklisp.lisp
+- Execute ~ccl --load quicklisp.lisp~ to load quicklisp
+- Evaluate in the REPL ~(quicklisp-quickstart:install)~ to install
+- Evaluate in the REPL ~(ql:add-to-init-file)~ to add quicklisp to your ccl init file
+
+more detailed instructions and other resources are readily available
+on the quicklisp website.
+
+** Installation Steps
++ Create unix user for hosting git repositories
++ Create a config file in the XDG home directory of the user that will
+  be hosting the Git repositories and running this application. The
+  XDG home directory is =~/.config/source/init.lisp=. Within your
+  config, you can execute any arbitrary lisp or set any configuration
+  variables.
++ Set =(in-package :source.config)= at the top of the configuration
+  file.
+
+** Run from Source
+In a new Terminal execute the following:
+
+1. ~lisp~ to create a new Lisp Repl (replace ~lisp~ with ~sbcl~ or
+   ~ccl~)
+2. Execute ~(require :asdf)~ if asdf is not already loaded
+3. Execute ~(asdf:load-asd "/full/path/to/source.asd")~ to load the
+   Source system definition (you can not use relative pathnames).
+4. Execute ~(ql:quickload :source)~ to load the SOURCE system into
+   your Lisp image.
+5. Execute ~(source:start)~ to start the server (by default at
+   localhost:5000/.
+
+*** Initializing the Database
+You will want to initialize the database. To do so, you can load the
+SOURCE system and execute the function
+~(source.db::initialize-database)~.
+
+*** Configuring the Database
+Configuration of the database can be done by changing the information
+in ~src/config.lisp~. You can find out more information in the
+[[https://github.com/fukamachi/caveman#configuration][Caveman2 Documentation]].
+
+*** Running different modes in the Slime REPL
+Caveman2, which SOURCE is built upon uses Envy for configuration
+management. You are supposed to set the "APP_ENV" variable to
+"development" or "production", or nothing at all to control the
+configuration. The result of these configuration options can be seen
+in ~config.lisp~.
+
+When executing SOURCE via Slime, it may not always be possible to have
+set the environment variable to test different things. In order to do
+this, you can do something like the following:
+
++ ~(setf (osicat:environment-variable "APP_ENV") "development")~
++ ~(setf (osicat:environment-variable "APP_ENV") "production")~
++ ...
+
+
+** Interesting Configuration Variables
+The list below includes configuration variables you may wish to
+change, and their defaults.
+
+#+NAME: configuration variables
+#+BEGIN_SRC lisp
+(defparameter *domain*
+  "domain.com")
+(defparameter *git-user*
+  "git" "User created specifically for this application")
+(defparameter *application-root*
+  (asdf:system-source-directory :source))
+(defparameter *static-directory*
+  (merge-pathnames #P"static/" *application-root*))
+(defparameter *repository-directory*
+  (make-pathname :directory (list :absolute "home" *git-user*)))
+(defparameter *git-url-base*
+  (concatenate 'string
+               "ssh://"
+               *git-user*
+               "@"
+               *domain*
+               (uiop:unix-namestring *repository-directory*)))
+(defparameter *authorized-keys-path*
+  (make-pathname :directory (list :absolute "home" *git-user* ".ssh")
+                 :name "authorized_keys"))
+#+END_SRC
+
+
+* How to manually make a repository on a remote server
 + Copy SSH keys to ~/.ssh/authorized_keys
 + Make bare remote git repository
-+ Set remote to ssh://git@source.atlas.engineer/home/git/qr-video.git
-* Tasks
-+ Login/Logout (sessions) https://github.com/fukamachi/caveman#using-session
-+ Hashing of Password
-#+NAME: hash password
-#+BEGIN_SRC lisp
-(defun hash-password (password)
-  (ironclad:byte-array-to-hex-string 
-   (ironclad:digest-sequence 
-    :sha256
-    (ironclad:ascii-string-to-byte-array password))))
-#+END_SRC
-+ Creating Repositories
-+ Deleting Repositories
-+ Creating Users
++ Set remote to ssh://git@source.atlas.engineer/home/git/path.git
++ Using a =.git= suffix is only convention, it is not integral to the
+  creation of a bare repository
+* Future
++ Allow ability for individuals to clone and download public repositories
