@@ -24,7 +24,7 @@
 (defparameter *static-directory*
   (merge-pathnames #P"static/" *application-root*))
 (defparameter *repository-directory*
-  (make-pathname :directory '(:absolute "home" *git-user*)))
+  (make-pathname :directory (list :absolute "home" *git-user*)))
 (defparameter *git-url-base*
   (concatenate 'string
                "ssh://"
@@ -33,7 +33,7 @@
                *domain*
                (uiop:unix-namestring *repository-directory*)))
 (defparameter *authorized-keys-path*
-  (make-pathname :directory '(:absolute "home" *git-user* ".ssh")
+  (make-pathname :directory (list :absolute "home" *git-user* ".ssh")
                  :name "authorized_keys"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
