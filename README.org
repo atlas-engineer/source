@@ -118,4 +118,5 @@ change, and their defaults.
 + Allow ability for individuals to clone and download public repositories
 + Install Script for FreeBSD
 + Run Script for "one-click" run
++ Compilation Script
 + Unit testing
