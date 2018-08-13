@@ -190,10 +190,8 @@
         (if (equal (hash-password submitted-current-password)
                    current-hashed-password)
             (progn
-              (when (not (equal new-public-key ""))
-                (add-key-to-authorized-keys new-public-key)
-                (delete-key-from-authorized-keys current-public-key)
-                (update-user username :public-key new-public-key))
+              (update-user username :public-key new-public-key)
+              (update-authorized-keys)
               (update-user username :email new-email)
               (update-user username :password
                            (if (not (equalp new-password ""))

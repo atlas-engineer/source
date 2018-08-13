@@ -24,6 +24,22 @@
     (write-sequence key f))
   (update-authorized-keys-ownership))
 
+(defun update-authorized-keys ()
+  (with-connection (db)
+    (let ((lines (mapcar #'cadr
+                         (datafly:retrieve-all
+                          (sxql:select :public-key
+                            (from :user)
+                            (where (:not-null :public-key)))))))
+      (with-open-file (f source.config::*authorized-keys-path*
+                     :direction :output
+                     :if-exists :supersede
+                     :if-does-not-exist :create)
+      (loop for line in lines do
+        (write-sequence line f)
+        (write-char #\newline f)))))
+    (update-authorized-keys-ownership))
+
 (defun update-authorized-keys-ownership ()
   (uiop:run-program  
    (list "chown"
