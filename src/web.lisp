@@ -180,7 +180,6 @@
       (let* ((username (gethash :username *session* ""))
              (user (car (retrieve-all (select :* (from :user)
                                         (where (:= :username username))))))
-             (current-public-key (getf user :public-key))
              (current-hashed-password (getf user :password))
              (parsed (rest (car _parsed)))
              (new-public-key (cdr (assoc "public-key" parsed :test #'equalp)))
