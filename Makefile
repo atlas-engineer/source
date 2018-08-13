@@ -15,6 +15,7 @@ help:
 	@echo '   make publish       create a binary for release              '
 	@echo '   make rsync_push    push to a remote server                  '
 	@echo '   make run           start the server                         '
+	@echo '   make load          load the system                          '
 	@echo '                                                               '
 
 
@@ -25,5 +26,8 @@ rsync_push:
 	rsync -ar $(CURRENT_DIR) $(SSH_USER)@$(SSH_HOST):$(SSH_TARGET_DIR) --filter=':- .gitignore'
 
 run:
-	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :athena)" --eval "(source:start :port 80)"
+	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)" --eval "(source:start :port 80)"
+
+load:
+	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)"
 

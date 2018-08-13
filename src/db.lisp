@@ -65,3 +65,10 @@
      (sxql:update :user
        (sxql:set= :password (hash-password password))
        (sxql:where (:= :username username))))))
+
+(defun set-ssh-key (username key)
+  (with-connection (db)
+    (datafly:execute
+     (sxql:update :user
+       (sxql:set= :public-key key)
+       (sxql:where (:= :username username))))))
