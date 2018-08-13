@@ -29,5 +29,5 @@ run:
 	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)" --eval "(source:start :port 80)"
 
 load:
-	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)"
+	$(LISP) --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)"
 
