@@ -72,3 +72,16 @@
      (sxql:update :user
        (sxql:set= :public-key key)
        (sxql:where (:= :username username))))))
+
+(defun delete-account (username)
+  (with-connection (db)
+    (datafly:execute
+     (sxql:delete-from :user
+       (sxql:where (:= :username username))))))
+
+(defun list-accounts ()
+  (with-connection (db)
+    (datafly:retrieve-all
+     (sxql:select (:username)
+       (sxql:from :user)))))
+
