@@ -14,7 +14,7 @@
 
 (defun render-menu ()
   (cl-markup:markup
-   (:div :class "pure-menu pure-menu-horizontal pure-menu-scrollable"
+   (:div :class "pure-menu pure-menu-horizontal"
          (:ul :class "pure-menu-list"
               (:li :class "pure-menu-item"
                    (:a :href "/" :class "pure-menu-link"
