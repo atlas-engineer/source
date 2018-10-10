@@ -15,6 +15,7 @@ help:
 	@echo '   make publish       create a binary for release              '
 	@echo '   make rsync_push    push to a remote server                  '
 	@echo '   make run           start the server                         '
+	@echo '   make fcgi          start the fcgi server                    '
 	@echo '   make load          load the system                          '
 	@echo '                                                               '
 
@@ -31,3 +32,5 @@ run:
 load:
 	$(LISP) --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)"
 
+fcgi:
+	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :survey)" --eval "(source:start :server :fcgi :port 9000 :debug nil)"
