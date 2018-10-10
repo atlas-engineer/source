@@ -120,3 +120,165 @@ change, and their defaults.
 + Run Script for "one-click" run
 + Compilation Script
 + Unit testing
+* Deployment
+** FreeBSD Deployment
++ =pkg install screen=
++ =pkg install sqlite3=
++ =pkg install nginx=
++ =pkg install py27-certbot=
++ =pkg install sbcl-1.4.9,1=
++ =pkg install fcgi-devkit-2.4.0_5=
+
+*** Port SBCL Installation
++ =screen=
++ =portsnap fetch; portsnap extract=
++ =C-a d= to detach.
+
++ =pkg delete -f libiconv= to delete the native libiconv
+  implementation for the one specified in the port file dependency
+
++ =/usr/ports/lang/sbcl=
++ =make configure=
++ Enable Threading
++ =make install=
+
++ When compiling SBCL on a small machine with a low amount of RAM, you
+  may encounter a stuck Test:
+  SB-CONCURRENCY-TEST::MAILBOX.SINGLE-PRODUCER-MULTIPLE-CONSUMERS, to
+  fix the problem:
+
+1. =kill -9 SBCL PID= Figure out the PID of SBCL, and Kill it if it is
+   stuck on the aforementioned test.
+2. Manually touch obj/asdf-cache/sb-concurrency/test-passed.test-report
+3. Manually invoke install.sh
+
+*** Configuring Nginx
++ Edit =/etc/rc.conf= and add the following line:
+  ~nginx_enable="YES"~.
+
++ Edit =/usr/local/etc/nginx/nginx.conf= to use the following
+  configuration:
+#+NAME: nginx config
+#+BEGIN_SRC nginx
+
+#user  nobody;
+worker_processes  1;
+
+# This default error log path is compiled-in to make sure configuration parsing
+# errors are logged somewhere, especially during unattended boot when stderr
+# isn't normally logged anywhere. This path will be touched on every nginx
+# start regardless of error log location configured here. See
+# https://trac.nginx.org/nginx/ticket/147 for more info. 
+#
+#error_log  /var/log/nginx/error.log;
+#
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    server {
+        listen       80;
+        server_name  www.athena.atlas.engineer athena.atlas.engineer;
+        return       301 https://$host$request_uri;
+    }
+
+    # HTTPS server
+    server {
+        listen       443 ssl;
+        server_name  athena.atlas.engineer;
+
+        ssl_certificate      /usr/local/etc/letsencrypt/live/athena.atlas.engineer/fullchain.pem;
+        ssl_certificate_key  /usr/local/etc/letsencrypt/live/athena.atlas.engineer/privkey.pem;
+
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+
+        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers  on;
+
+        location / {
+            proxy_pass   http://127.0.0.1:5000;
+        }
+        
+    }
+
+}
+
+#+END_SRC
+
+To use FCGI configuration instead:
+
+#+NAME: fcgi
+#+BEGIN_SRC nginx
+        location / {
+            include /usr/local/etc/nginx/fastcgi_params;
+            fastcgi_pass  127.0.0.1:9000;
+        }
+#+END_SRC
+
+
++ Start the service =service nginx start=
++ Restart the service =service nginx restart=
+
+*** Managing the SSL Certificate
+**** Create a SSL Certificate
++ Stop Nginx =service stop nginx=
++ =sudo certbot certonly --standalone -d athena.atlas.engineer=
++ It will tell you where it has dumped the certificates, these are to
+  be used in the Nginx configuration
++ Start Nginx =service start nginx=
+**** Renew the SSL Certificate
++ make sure to stop Nginx
++ =sudo certbot renew --dry-run=
++ restart Nginx
+*** Installing Quicklisp
+The official quicklisp website can provide updated links
+to downloads, and instructions:
+
+https://www.quicklisp.org
+
+To install quicklisp:
+
+- Download https://beta.quicklisp.org/quicklisp.lisp
+- Execute ~lisp --load quicklisp.lisp~ to load quicklisp (replace
+  ~lisp~ with ~sbcl~ or ~ccl~)
+- Evaluate in the REPL ~(quicklisp-quickstart:install)~ to install
+- Evaluate in the REPL ~(ql:add-to-init-file)~ to add quicklisp to
+  your ccl init file
+
+more detailed instructions and other resources are readily available
+on the quicklisp website.
+
+*** Run from Source
+In a new Terminal execute the following:
+
+1. =screen= to create a new screen.
+2. Navigate to the Survey project directory
+3. Execute =service nginx start=
+4. Execute =make run=
+5. Execute =C-a d= to detach from screen
+6. Close the terminal session
+
