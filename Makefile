@@ -33,4 +33,4 @@ load:
 	$(LISP) --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)"
 
 fcgi:
-	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :survey)" --eval "(source:start :server :fcgi :port 9000 :debug nil)"
+	$(LISP) --noprint --eval "(asdf:load-asd \""$(ASD_PATH)"\")" --eval "(ql:quickload :source)" --eval "(source:start :server :fcgi :port 9000 :debug nil)"
