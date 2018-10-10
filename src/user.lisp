@@ -44,7 +44,8 @@
   (uiop:run-program  
    (list "chown"
          (concatenate 'string source.config::*git-user* ":" source.config::*git-user*)
-         source.config::*authorized-keys-path*)))
+         (uiop:native-namestring source.config::*authorized-keys-path*))
+   :ignore-error-status t))
 
 (defun update-user (username field value)
   (unless (or (not value) (equal "" value))
