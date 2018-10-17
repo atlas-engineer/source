@@ -110,10 +110,12 @@ change, and their defaults.
 
 * How to manually make a repository on a remote server
 + Copy SSH keys to ~/.ssh/authorized_keys
-+ Make bare remote git repository
-+ Set remote to ssh://git@source.atlas.engineer/home/git/path.git
-+ Using a =.git= suffix is only convention, it is not integral to the
-  creation of a bare repository
+** Creating a Repository
++ =su user git=
++ =mkdir -p /home/git/repository.git=
++ =cd /home/git/repository.git=
++ =git init --bare --shared=
++ Your remote will be ssh://git@source.atlas.engineer/home/git/path.git
 * Future Improvements
 + Allow ability for individuals to clone and download public repositories
 + Install Script for FreeBSD
