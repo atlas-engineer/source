@@ -9,14 +9,13 @@
    (crane:create
     'repository
     :name name
-    :public (if public "1" "0")))
+    :public (if public 1 0)))
   (create-repository-folder
    (merge-pathnames name source.config::*repository-directory*)))
 
 (defun delete-repository (name)
-  (with-connection (db)
-    (execute (delete-from :repository
-               (where (:= :name name)))))
+  (let ((repository (crane:single 'repository :name name)))
+    (crane:del repository))
   (delete-repository-folder
    (merge-pathnames name source.config::*repository-directory*)))
 
