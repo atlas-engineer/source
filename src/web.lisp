@@ -181,6 +181,7 @@
            (cl-markup:markup
             (:h1 "Invalid current password provided, please try again.")))))))
 
+
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
