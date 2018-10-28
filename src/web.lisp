@@ -68,7 +68,7 @@
           (setf (gethash :email *session*) (email user))
           (render-page
            (cl-markup:markup
-            (:h1 (concatenate 'string "Login successful: " (email user))))))
+            (:h2 (concatenate 'string "Login successful: " (email user))))))
         (render-page
          (cl-markup:markup (:h1 "Login failed."))))))
 
