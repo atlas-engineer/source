@@ -142,62 +142,44 @@
      (cl-markup:markup
       (:h1 "Repository deleted.")))))
 
-(defroute "/configure/account" ()
+(defroute ("/account" :method :GET) ()
   (with-logged-in
-    (with-connection (db)
-      (let* ((username (gethash :username *session* ""))
-             (user (car (retrieve-all (select :* (from :user)
-                                        (where (:= :username username))))))
-             (public-key (getf user :public-key))
-             (email-address (getf user :email)))
-        (render-page
-         (cl-markup:markup
-          (:h1 "Account Settings")
-          (:p "Only enter information for updated fields. Current
-          password is required to update any/all fields.")
-          (:form :class "pure-form" :action "/update/account"
-                 (:p "Public Key")
-                 (:input :type "text" :name "account[public-key]"
-                         :placeholder public-key)
-                 (:p "Email Address")
-                 (:input :type "text" :name "account[email]"
-                         :placeholder email-address)
-                 (:p "New Password")
-                 (:input :type "password" :name "account[password]")
-                 (:p "Current Password (required)")
-                 (:input :type "password" :name "account[current-password]")
-                 (:br)
-                 (:br)
-                 (:button :type "submit" :class "pure-button" "Update"))))))))
+    (let ((user (crane:single 'user :email (gethash :email *session*))))
+      (render-page
+       (cl-markup:markup
+        (:h1 "My Account")
+        (:h2 "Please only add values to fields you wish to change.")
+        (:form :class "pure-form" :action "/account" :method "post"
+               (:p "Public Key")
+               (:input :type "text" :name "public-key" :placeholder (public-key user))
+               (:p "Email Address")
+               (:input :type "text" :name "email" :placeholder (email user))
+               (:p "New Password")
+               (:input :type "password" :name "password")
+               (:p "Current Password (required)")
+               (:input :type "password" :name "current-password")
+               (:br)
+               (:br)
+               (:button :type "submit" :class "pure-button" "Update")))))))
 
-(defroute "/update/account" (&key _parsed)
+(defroute ("/account" :method :POST) (&key |public-key| |email| 
+                                           |password|
+                                           |current-password|)
   (with-logged-in
-    (with-connection (db)
-      (let* ((username (gethash :username *session* ""))
-             (user (car (retrieve-all (select :* (from :user)
-                                        (where (:= :username username))))))
-             (current-hashed-password (getf user :password))
-             (parsed (rest (car _parsed)))
-             (new-public-key (cdr (assoc "public-key" parsed :test #'equalp)))
-             (new-email (cdr (assoc "email" parsed :test #'equalp)))
-             (new-password (cdr (assoc "password" parsed :test #'equalp)))
-             (submitted-current-password (cdr (assoc "current-password" parsed :test #'equalp))))
-        (if (equal (hash-password submitted-current-password)
-                   current-hashed-password)
-            (progn
-              (update-user username :public-key new-public-key)
-              (update-authorized-keys)
-              (update-user username :email new-email)
-              (update-user username :password
-                           (if (not (equalp new-password ""))
-                               (hash-password new-password)
-                               nil))
-              (render-page
-               (cl-markup:markup
-                (:h1 "Account Updated."))))
+    (let ((user (crane:single 'user :email (gethash :email *session*))))
+      (if (equalp (password user) (hash-password |current-password|))
+          (progn
+            (unless (str:emptyp |public-key|) (setf (public-key user) |public-key|))
+            (unless (str:emptyp |email|) (setf (email user) |email|))
+            (unless (str:emptyp |password|) (setf (password user) (hash-password |password|)))
+            (crane:save user)
+            (update-authorized-keys)
             (render-page
              (cl-markup:markup
-              (:h1 "Invalid current password entered."))))))))
+              (:h1 "User Account Information Updated."))))
+          (render-page
+           (cl-markup:markup
+            (:h1 "Invalid current password provided, please try again.")))))))
 
 ;; Error pages
 (defmethod on-exception ((app <web>) (code (eql 404)))

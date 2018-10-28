@@ -33,3 +33,6 @@
   (let ((user (crane:single 'user :username username)))
     (crane:del user)))
 
+(defun list-public-keys ()
+  (remove nil (loop for user in (crane:filter 'user)
+                    collect (public-key user))))

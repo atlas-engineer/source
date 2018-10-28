@@ -25,19 +25,13 @@
   (update-authorized-keys-ownership))
 
 (defun update-authorized-keys ()
-  (with-connection (db)
-    (let ((lines (mapcar #'cadr
-                         (datafly:retrieve-all
-                          (sxql:select :public-key
-                            (from :user)
-                            (where (:not-null :public-key)))))))
-      (with-open-file (f source.config::*authorized-keys-path*
+  (with-open-file (f source.config:*authorized-keys-path*
                      :direction :output
                      :if-exists :supersede
                      :if-does-not-exist :create)
-      (loop for line in lines do
-        (write-sequence line f)
-        (write-char #\newline f)))))
+    (loop for line in (list-public-keys) do
+      (write-sequence line f)
+      (write-char #\newline f)))
     (update-authorized-keys-ownership))
 
 (defun update-authorized-keys-ownership ()
@@ -46,10 +40,3 @@
          (concatenate 'string source.config::*git-user* ":" source.config::*git-user*)
          (uiop:native-namestring source.config::*authorized-keys-path*))
    :ignore-error-status t))
-
-(defun update-user (username field value)
-  (unless (or (not value) (equal "" value))
-    (with-connection (db)
-      (execute (update :user
-                 (set= field value)
-                 (where (:= :username username)))))))

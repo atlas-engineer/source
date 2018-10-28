@@ -4,13 +4,15 @@
   (:import-from :envy
                 :config-env-var
                 :defconfig)
-  (:export :config
-           :*application-root*
-           :*static-directory*
-           :*template-directory*
-           :appenv
-           :developmentp
-           :productionp))
+  (:export
+   :config
+   :*application-root*
+   :*static-directory*
+   :*template-directory*
+   :*authorized-keys-path*
+   :appenv
+   :developmentp
+   :productionp))
 (in-package :source.config)
 
 (setf (config-env-var) "APP_ENV")
