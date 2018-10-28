@@ -1,14 +1,13 @@
 * SOURCE: Common Lisp Source Hosting Software
 SOURCE is software that you can use to host your own remote
 repositories.
+
 * Installation
+
 ** Installing a Lisp Implementation
 One of the following Lisp implementations is recommended for usage
 with SOURCE.
 
-+ Download CCL: [[https://ccl.clozure.com/download.html]], full
-  installation instructions can be found here:
-  [[https://ccl.clozure.com/install.html]].
 + Download SBCL: [[http://sbcl.org/platform-table.html]], full
   installation instructions can be found here:
   [[http://sbcl.org/getting.html]].
@@ -43,23 +42,6 @@ on the quicklisp website.
   file.
 
 ** Run from Source
-In a new Terminal execute the following:
-
-1. ~lisp~ to create a new Lisp Repl (replace ~lisp~ with ~sbcl~ or
-   ~ccl~)
-2. Execute ~(require :asdf)~ if asdf is not already loaded
-3. Execute ~(asdf:load-asd "/full/path/to/source.asd")~ to load the
-   Source system definition (you can not use relative pathnames).
-4. Execute ~(ql:quickload :source)~ to load the SOURCE system into
-   your Lisp image.
-5. Execute ~(source:start)~ to start the server (by default at
-   localhost:5000/.
-
-*** Configuring the Database
-Configuration of the database can be done by changing the information
-in ~src/config.lisp~. You can find out more information in the
-[[https://github.com/fukamachi/caveman#configuration][Caveman2 Documentation]].
-
 *** Running different modes in the Slime REPL
 Caveman2, which SOURCE is built upon uses Envy for configuration
 management. You are supposed to set the "APP_ENV" variable to
@@ -111,13 +93,15 @@ change, and their defaults.
 + =cd /home/git/repository.git=
 + =git init --bare --shared=
 + Your remote will be ssh://git@source.atlas.engineer/home/git/path.git
-* Future Improvements
+
+* Future improvements
 + Allow ability for individuals to clone and download public repositories
-+ Install Script for FreeBSD
 + Run Script for "one-click" run
 + Compilation Script
 + Unit testing
+
 * Deployment
+
 ** FreeBSD Deployment
 + =pkg install screen=
 + =pkg install sqlite3=
@@ -251,6 +235,7 @@ To use FCGI configuration instead:
 + make sure to stop Nginx
 + =sudo certbot renew --dry-run=
 + restart Nginx
+
 *** Installing Quicklisp
 The official quicklisp website can provide updated links
 to downloads, and instructions:
