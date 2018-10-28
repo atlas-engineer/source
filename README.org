@@ -55,11 +55,6 @@ In a new Terminal execute the following:
 5. Execute ~(source:start)~ to start the server (by default at
    localhost:5000/.
 
-*** Initializing the Database
-You will want to initialize the database. To do so, you can load the
-SOURCE system and execute the function
-~(source.db::initialize-database)~.
-
 *** Configuring the Database
 Configuration of the database can be done by changing the information
 in ~src/config.lisp~. You can find out more information in the

@@ -5,12 +5,11 @@
 (in-package :source.web)
 
 (defun create-repository (name public)
-  (with-connection (db)
-    (execute
-     (insert-into :repository
-       (set=
-        :name name
-        :public (if public 1 0)))))
+  (crane:save
+   (crane:create
+    'repository
+    :name name
+    :public (if public "1" "0")))
   (create-repository-folder
    (merge-pathnames name source.config::*repository-directory*)))
 
@@ -39,18 +38,10 @@
           path))))
 
 (defun list-repositories (public)
-  (with-connection (db)
-    (let* ((public-int (if public 1 0))
-           (repositories
-            (retrieve-all
-             (select :name
-               (from :repository)
-               (where (:= :public public-int))))))
-      (loop for repository in repositories
-            collect (cadr repository)))))
+  (crane:filter
+   'repository
+   (:= :public (if public 1 0))))
 
 (defun get-repository-visibility (repository)
-  (with-connection (db)
-    (retrieve-one (select :public
-                    (from :repository)
-                    (where (:= :name repository))))))
+  (when repository
+    (if (equal (public repository) 1) t nil)))

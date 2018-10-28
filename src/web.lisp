@@ -1,12 +1,14 @@
 (in-package :cl-user)
 (defpackage source.web
-  (:use :cl
-        :caveman2
-        :source.config
-        :source.view
-        :source.db
-        :datafly
-        :sxql)
+  (:use
+   :cl
+   :caveman2
+   :source.config
+   :source.view
+   :crane)
+  (:import-from
+   :cl-markup
+   :markup)
   (:export :*web*))
 (in-package :source.web)
 
@@ -28,17 +30,18 @@
                      (list-repositories nil))
               (list-repositories t))))
     (render-page
-     (cl-markup:markup
+     (markup
       (:h1 "Source: The simple source repository.")
       (:h2 "Repositories:")
-      (:ul
+      (:ul :class "repository-list"
        (loop for repository in repositories
              collect
-             (cl-markup:markup
-              (:li (:a :href (concatenate 'string "/view/repository/" repository)
-                       repository)))))))))
+             (markup
+              (:li (:a :href
+                       (concatenate 'string "/view/repository/" (name repository))
+                       (name repository))))))))))
 
-(defroute "/login" ()
+(defroute ("/login" :method :GET) ()
   (if (gethash :logged-in *session*)
       (render-page
        (cl-markup:markup
@@ -46,39 +49,28 @@
       (render-page
        (cl-markup:markup
         (:h1 "Login")
-        (:form :class "pure-form" :action "/login/authenticate"
+        (:form :class "pure-form" :action "/login" :method "post"
                (:p "Username")
-               (:input :type "text" :name "login[username]")
+               (:input :type "text" :name "username")
                (:p "Password")
-               (:input :type "password" :name "login[password]")
+               (:input :type "password" :name "password")
                (:br)
                (:br)
                (:button :type "submit" :class "pure-button" "Submit"))))))
 
-(defroute "/login/authenticate" (&key _parsed)
-  (let* ((credentials (car _parsed))
-             (username (cdadr credentials))
-             (password (hash-password (cdaddr credentials))))
-        (with-connection (db)
-          (let ((login-matched
-                  (retrieve-one-value
-                   (select :username
-                     (from :user)
-                     (where (:and
-                             (:= :username username)
-                             (:= :password password)))))))
-            (if login-matched
-                (progn
-                  (setf (gethash :logged-in *session*) t)
-                  (setf (gethash :username *session*) username)
-                  (print (gethash :logged-in *session*))
-                  (render-page
-                   (cl-markup:markup
-                    (:h1 (concatenate 'string
-                                      "Login successful: "
-                                      username)))))
-                (render-page
-                 (cl-markup:markup (:h1 "Login failed."))))))))
+(defroute ("/login" :method :POST) (&key |username| |password|)
+  (let ((user (crane:single 'user
+                            :username |username|
+                            :password (hash-password |password|))))
+    (if user
+        (progn
+          (setf (gethash :logged-in *session*) t)
+          (setf (gethash :email *session*) (email user))
+          (render-page
+           (cl-markup:markup
+            (:h1 (concatenate 'string "Login successful: " (email user))))))
+        (render-page
+         (cl-markup:markup (:h1 "Login failed."))))))
 
 (defroute "/logout" ()
   (with-logged-in 
@@ -88,12 +80,12 @@
      (cl-markup:markup
       (:h1 "Logged out.")))))
 
-(defroute "/create/repository" ()
+(defroute ("/create/repository" :method :GET) ()
   (with-logged-in
     (render-page
      (cl-markup:markup
       (:h1 "Create Repository")
-      (:form :class "pure-form" :action "/create/repository/process"
+      (:form :class "pure-form" :action "/create/repository" :method "post"
              (:p "Name ([A-Za-z0-9_-]+)")
              (:input :type "text" :name "repository[name]")
              (:p "Public Visibility "
@@ -101,7 +93,7 @@
              (:br)
              (:button :type "submit" :class "pure-button" "Create"))))))
 
-(defroute "/create/repository/process" (&key _parsed)
+(defroute ("/create/repository" :method :POST) (&key _parsed)
   (with-logged-in
     (let* ((parsed (rest (car _parsed)))
            (name (cdr (assoc "name" parsed :test #'equalp)))
@@ -109,24 +101,25 @@
       (create-repository name public))
     (render-page
      (cl-markup:markup
-      (:h1 "Repository created")))))
+      (:h1 "Repository created.")))))
 
-(defroute "/view/repository/:repository" (&key repository)
-  (let ((repository-public? (get-repository-visibility repository))
-        (logged-in (gethash :logged-in *session*)))
-    (if (or (equal 1 (cadr repository-public?))
-            (and logged-in repository-public?))
+(defroute "/view/repository/:repository-name" (&key repository-name)
+  (let* ((repository (crane:single 'repository :name repository-name))
+         (repository-public? (get-repository-visibility repository))
+         (logged-in (gethash :logged-in *session*)))
+    (if (or repository-public? logged-in)
         (render-page
          (cl-markup:markup
-          (:h1 repository)
+          (:h1 (name repository))
           (:h2 "URL")
           (:p (concatenate 'string
                            source.config::*git-url-base*
-                           repository))
+                           (name repository)))
           (:h2 "Operations")
           (:p (:a :href (concatenate 'string
                                      "/delete/repository/confirm/"
-                                     repository) "Delete Repository"))))
+                                     (name repository))
+                  "Delete Repository"))))
         (render-page
          (cl-markup:markup
           (:h1 "Repository does not exist."))))))

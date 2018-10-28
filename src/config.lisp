@@ -31,6 +31,8 @@
 (defparameter *authorized-keys-path*
   (make-pathname :directory (list :absolute "home" *git-user* ".ssh")
                  :name "authorized_keys"))
+(defparameter *database-path* (uiop:unix-namestring
+                               (merge-pathnames #P"database.db" *application-root*)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Allow special user configuration via an init file ;;
@@ -58,6 +60,16 @@
 
 (defconfig |test|
   '())
+
+(crane:setup
+ :migrations-directory
+ (asdf:system-relative-pathname :source #p"migrations/")
+ :databases
+ (list :main
+       (list :type :sqlite3
+             :name *database-path*)))
+
+(crane:connect)
 
 (defun config (&optional key)
   (envy:config #.(package-name *package*) key))
