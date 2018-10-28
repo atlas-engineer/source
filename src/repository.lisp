@@ -28,7 +28,7 @@
    (list "chown" "-R"
          (concatenate 'string source.config::*git-user* ":" source.config::*git-user*)
          (uiop:unix-namestring
-          path))))
+          path)) :ignore-error-status t))
 
 (defun delete-repository-folder (path)
   (uiop:run-program
