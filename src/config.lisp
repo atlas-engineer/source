@@ -18,7 +18,7 @@
 (setf (config-env-var) "APP_ENV")
 
 (defparameter *domain*
-  "next.atlas.engineer" "Domain the software is hosted on.")
+  "source.atlas.engineer" "Domain the software is hosted on.")
 (defparameter *git-user*
   "git" "User created specifically for this application.")
 (defparameter *application-root*
