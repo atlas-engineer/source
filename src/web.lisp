@@ -115,11 +115,14 @@
           (:p (concatenate 'string
                            source.config::*git-url-base*
                            (name repository)))
-          (:h2 "Operations")
-          (:p (:a :href (concatenate 'string
-                                     "/delete/repository/confirm/"
-                                     (name repository))
-                  "Delete Repository"))))
+          (:div (when logged-in
+                  (markup:raw
+                   (markup
+                    (:h2 "Operations")
+                    (:p (:a :href (concatenate 'string
+                                               "/delete/repository/confirm/"
+                                               (name repository))
+                            "Delete Repository"))))))))
         (render-page
          (cl-markup:markup
           (:h1 "Repository does not exist."))))))
