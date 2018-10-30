@@ -215,13 +215,13 @@ http {
         ssl_ciphers  HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers  on;
 
-        location / {
-            proxy_pass   http://127.0.0.1:5000;
-        }
-
         location /public/ {
             alias /usr/home/git/public/;
             autoindex on;
+        }
+
+        location / {
+            proxy_pass   http://127.0.0.1:5000;
         }
         
     }
