@@ -10,6 +10,8 @@
    :*static-directory*
    :*template-directory*
    :*authorized-keys-path*
+   :*repository-directory*
+   :*public-repository-directory*
    :appenv
    :developmentp
    :productionp))

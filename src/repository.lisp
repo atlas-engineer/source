@@ -10,14 +10,13 @@
     'repository
     :name name
     :public (if public 1 0)))
-  (create-repository-folder
-   (merge-pathnames name source.config::*repository-directory*)))
-
-(defun delete-repository (name)
-  (let ((repository (crane:single 'repository :name name)))
-    (crane:del repository))
-  (delete-repository-folder
-   (merge-pathnames name source.config::*repository-directory*)))
+  (let ((repository-path (merge-pathnames name source.config:*repository-directory*))
+        (public-repository-path
+          (concatenate 'string
+                       (uiop:unix-namestring source.config:*public-repository-directory*)
+                       "./" name)))
+    (create-repository-folder repository-path)
+    (when public (create-public-repository-symlink repository-path public-repository-path))))
 
 (defun create-repository-folder (path)
   (uiop:run-program
@@ -29,6 +28,18 @@
          (concatenate 'string source.config::*git-user* ":" source.config::*git-user*)
          (uiop:unix-namestring
           path)) :ignore-error-status t))
+
+(defun create-public-repository-symlink (path public-path)
+  (uiop:run-program
+   (list "ln" "-s"
+         (uiop:unix-namestring path)
+         (uiop:unix-namestring public-path))))
+
+(defun delete-repository (name)
+  (let ((repository (crane:single 'repository :name name)))
+    (crane:del repository))
+  (delete-repository-folder
+   (merge-pathnames name source.config:*repository-directory*)))
 
 (defun delete-repository-folder (path)
   (uiop:run-program
