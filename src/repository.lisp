@@ -16,7 +16,9 @@
                        (uiop:unix-namestring source.config:*public-repository-directory*)
                        "./" name)))
     (create-repository-folder repository-path)
-    (when public (create-public-repository-symlink repository-path public-repository-path))))
+    (when public
+      (create-public-repository-symlink repository-path public-repository-path)
+      (create-repository-update-hook (uiop:unix-namestring repository-path)))))
 
 (defun create-repository-folder (path)
   (uiop:run-program
@@ -34,6 +36,14 @@
    (list "ln" "-s"
          (uiop:unix-namestring path)
          (uiop:unix-namestring public-path))))
+
+(defun create-repository-update-hook (path)
+  (let ((hook-sample-path (concatenate 'string path "/hooks/post-update.sample"))
+        (hook-path (concatenate 'string path "/hooks/post-update")))
+    (uiop:run-program
+     (list "mv" hook-sample-path hook-path))
+    (uiop:run-program
+     (list "chmod" "a+x" hook-path))))
 
 (defun delete-repository (name)
   (let* ((repository (crane:single 'repository :name name))
