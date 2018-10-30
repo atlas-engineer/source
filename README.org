@@ -2,8 +2,7 @@
 SOURCE is software that you can use to host your own remote
 repositories.
 
-* Installation
-
+* Developer Installation
 ** Installing a Lisp Implementation
 One of the following Lisp implementations is recommended for usage
 with SOURCE.
