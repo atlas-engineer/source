@@ -112,9 +112,13 @@
          (cl-markup:markup
           (:h1 (name repository))
           (:h2 "URL")
-          (:p (concatenate 'string
-                           source.config::*git-url-base*
-                           (name repository)))
+          (:p (if logged-in
+                  (concatenate 'string
+                               source.config:*git-url-base*
+                               (name repository))
+                  (concatenate 'string
+                               source.config:*http-url-base*
+                               (name repository))))
           (:div (when logged-in
                   (markup:raw
                    (markup

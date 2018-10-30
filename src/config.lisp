@@ -12,6 +12,8 @@
    :*authorized-keys-path*
    :*repository-directory*
    :*public-repository-directory*
+   :*git-url-base*
+   :*http-url-base*
    :appenv
    :developmentp
    :productionp))
@@ -34,6 +36,8 @@
 (defparameter *git-url-base*
   (concatenate 'string "ssh://" *git-user* "@" *domain*
                (uiop:unix-namestring *repository-directory*)))
+(defparameter *http-url-base*
+  (concatenate 'string "https://" *domain* "/public/"))
 (defparameter *authorized-keys-path*
   (make-pathname :directory (list :absolute "home" *git-user* ".ssh")
                  :name "authorized_keys"))
