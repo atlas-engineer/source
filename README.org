@@ -103,12 +103,16 @@ change, and their defaults.
 * Deployment
 
 ** FreeBSD Deployment
-+ =pkg install screen=
-+ =pkg install sqlite3=
-+ =pkg install nginx=
-+ =pkg install py27-certbot=
-+ =pkg install sbcl-1.4.9,1=
-+ =pkg install fcgi-devkit-2.4.0_5=
+1. =pkg install screen=
+2. =pkg install sqlite3=
+3. =pkg install nginx=
+4. =pkg install py27-certbot=
+5. =pkg install sbcl-1.4.9,1=
+6. =pkg install fcgi-devkit-2.4.0_5=
+7. =pkg install git=
+8. =adduser git=
+   + Create user with default settings
+9. Create folder =public= in the =git= user home directory
 
 *** Port SBCL Installation
 + =screen=
@@ -132,6 +136,24 @@ change, and their defaults.
    stuck on the aforementioned test.
 2. Manually touch obj/asdf-cache/sb-concurrency/test-passed.test-report
 3. Manually invoke install.sh
+
+*** Installing Quicklisp
+The official quicklisp website can provide updated links
+to downloads, and instructions:
+
+https://www.quicklisp.org
+
+To install quicklisp:
+
+- Download https://beta.quicklisp.org/quicklisp.lisp
+- Execute ~lisp --load quicklisp.lisp~ to load quicklisp (replace
+  ~lisp~ with ~sbcl~ or ~ccl~)
+- Evaluate in the REPL ~(quicklisp-quickstart:install)~ to install
+- Evaluate in the REPL ~(ql:add-to-init-file)~ to add quicklisp to
+  your ccl init file
+
+more detailed instructions and other resources are readily available
+on the quicklisp website.
 
 *** Configuring Nginx
 + Edit =/etc/rc.conf= and add the following line:
@@ -182,17 +204,17 @@ http {
 
     server {
         listen       80;
-        server_name  www.athena.atlas.engineer athena.atlas.engineer;
+        server_name  www.source.atlas.engineer source.atlas.engineer;
         return       301 https://$host$request_uri;
     }
 
     # HTTPS server
     server {
         listen       443 ssl;
-        server_name  athena.atlas.engineer;
+        server_name  source.atlas.engineer;
 
-        ssl_certificate      /usr/local/etc/letsencrypt/live/athena.atlas.engineer/fullchain.pem;
-        ssl_certificate_key  /usr/local/etc/letsencrypt/live/athena.atlas.engineer/privkey.pem;
+        ssl_certificate      /usr/local/etc/letsencrypt/live/source.atlas.engineer/fullchain.pem;
+        ssl_certificate_key  /usr/local/etc/letsencrypt/live/source.atlas.engineer/privkey.pem;
 
         ssl_session_cache    shared:SSL:1m;
         ssl_session_timeout  5m;
@@ -202,6 +224,11 @@ http {
 
         location / {
             proxy_pass   http://127.0.0.1:5000;
+        }
+
+        location /public/ {
+            alias /usr/home/git/public/;
+            autoindex on;
         }
         
     }
@@ -227,7 +254,7 @@ To use FCGI configuration instead:
 *** Managing the SSL Certificate
 **** Create a SSL Certificate
 + Stop Nginx =service stop nginx=
-+ =sudo certbot certonly --standalone -d athena.atlas.engineer=
++ =sudo certbot certonly --standalone -d source.atlas.engineer=
 + It will tell you where it has dumped the certificates, these are to
   be used in the Nginx configuration
 + Start Nginx =service start nginx=
@@ -235,25 +262,6 @@ To use FCGI configuration instead:
 + make sure to stop Nginx
 + =sudo certbot renew --dry-run=
 + restart Nginx
-
-*** Installing Quicklisp
-The official quicklisp website can provide updated links
-to downloads, and instructions:
-
-https://www.quicklisp.org
-
-To install quicklisp:
-
-- Download https://beta.quicklisp.org/quicklisp.lisp
-- Execute ~lisp --load quicklisp.lisp~ to load quicklisp (replace
-  ~lisp~ with ~sbcl~ or ~ccl~)
-- Evaluate in the REPL ~(quicklisp-quickstart:install)~ to install
-- Evaluate in the REPL ~(ql:add-to-init-file)~ to add quicklisp to
-  your ccl init file
-
-more detailed instructions and other resources are readily available
-on the quicklisp website.
-
 *** Run from Source
 In a new Terminal execute the following:
 
@@ -264,3 +272,8 @@ In a new Terminal execute the following:
 5. Execute =C-a d= to detach from screen
 6. Close the terminal session
 
+*** Running in Production
++ =service nginx start=
++ Execute =screen= to create a new screen
+  + From within the screen navigate to the source repository root
+  + Execute =make fcgi= to run the fcgi server
