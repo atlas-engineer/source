@@ -94,12 +94,6 @@ change, and their defaults.
 + =git init --bare --shared=
 + Your remote will be ssh://git@source.atlas.engineer/home/git/path.git
 
-* Future improvements
-+ Allow ability for individuals to clone and download public repositories
-+ Run Script for "one-click" run
-+ Compilation Script
-+ Unit testing
-
 * Deployment
 
 ** FreeBSD Deployment
