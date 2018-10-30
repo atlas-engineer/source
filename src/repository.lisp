@@ -36,16 +36,25 @@
          (uiop:unix-namestring public-path))))
 
 (defun delete-repository (name)
-  (let ((repository (crane:single 'repository :name name)))
-    (crane:del repository))
-  (delete-repository-folder
-   (merge-pathnames name source.config:*repository-directory*)))
+  (let* ((repository (crane:single 'repository :name name))
+         (repository-path (merge-pathnames name source.config:*repository-directory*))
+         (repository-public? (public repository))
+         (public-repository-path
+           (concatenate 'string
+                       (uiop:unix-namestring source.config:*public-repository-directory*)
+                       "./" name)))
+    (crane:del repository)
+    (delete-repository-folder repository-path)
+    (when repository-public? (delete-repository-symlink public-repository-path))))
 
 (defun delete-repository-folder (path)
   (uiop:run-program
    (list "rm" "-rf"
          (uiop:unix-namestring
           path))))
+
+(defun delete-repository-symlink (path)
+  (uiop:run-program (list "unlink" path) :ignore-error-status t))
 
 (defun list-repositories (public)
   (crane:filter
