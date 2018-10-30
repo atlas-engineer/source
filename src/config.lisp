@@ -27,6 +27,8 @@
   (merge-pathnames #P"static/" *application-root*))
 (defparameter *repository-directory*
   (make-pathname :directory (list :absolute "home" *git-user*)))
+(defparameter *public-repository-directory*
+  (make-pathname :directory (list :absolute "home" *git-user* "public")))
 (defparameter *git-url-base*
   (concatenate 'string "ssh://" *git-user* "@" *domain*
                (uiop:unix-namestring *repository-directory*)))
