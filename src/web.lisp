@@ -73,7 +73,7 @@
          (cl-markup:markup (:h1 "Login failed."))))))
 
 (defroute "/logout" ()
-  (with-logged-in 
+  (with-logged-in
     (setf (gethash :logged-in *session*) nil)
     (setf (gethash :username *session*) nil)
     (render-page
@@ -126,7 +126,14 @@
                     (:p (:a :href (concatenate 'string
                                                "/delete/repository/confirm/"
                                                (name repository))
-                            "Delete Repository"))))))))
+                            "Delete Repository"))))))
+          (:div (:h1 "Contribute:")
+                (:p "All contributions and patches are accepted via
+                email. You can use git send-email to create patches
+                and send them to patch@atlas.engineer. To find out
+                more about git email patches please view the official
+                documentation:")
+                (:p "https://git-scm.com/docs/git-send-email"))))
         (render-page
          (cl-markup:markup
           (:h1 "Repository does not exist."))))))
@@ -166,7 +173,7 @@
                (:br)
                (:button :type "submit" :class "pure-button" "Update")))))))
 
-(defroute ("/account" :method :POST) (&key |public-key| |email| 
+(defroute ("/account" :method :POST) (&key |public-key| |email|
                                            |password|
                                            |current-password|)
   (with-logged-in
