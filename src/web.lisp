@@ -127,7 +127,7 @@
                                                "/delete/repository/confirm/"
                                                (name repository))
                             "Delete Repository"))))))
-          (:div (:h1 "Contribute:")
+          (:div (:h2 "Contribute:")
                 (:p "All contributions and patches are accepted via
                 email. You can use git send-email to create patches
                 and send them to patch@atlas.engineer. To find out
