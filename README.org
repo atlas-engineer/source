@@ -106,6 +106,8 @@ change, and their defaults.
 8. =adduser git=
    + Create user with default settings
 9. Create folder =public= in the =git= user home directory
+10. For all public repositories you will have to enable the Git sample
+    post-update hook.
 
 *** Port SBCL Installation
 + =screen=
@@ -164,7 +166,7 @@ worker_processes  1;
 # errors are logged somewhere, especially during unattended boot when stderr
 # isn't normally logged anywhere. This path will be touched on every nginx
 # start regardless of error log location configured here. See
-# https://trac.nginx.org/nginx/ticket/147 for more info. 
+# https://trac.nginx.org/nginx/ticket/147 for more info.
 #
 #error_log  /var/log/nginx/error.log;
 #
@@ -223,7 +225,7 @@ http {
         location / {
             proxy_pass   http://127.0.0.1:5000;
         }
-        
+
     }
 
 }
