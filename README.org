@@ -248,11 +248,11 @@ To use FCGI configuration instead:
 
 *** Managing the SSL Certificate
 **** Create a SSL Certificate
-+ Stop Nginx =service stop nginx=
++ Stop Nginx =service nginx stop=
 + =sudo certbot certonly --standalone -d source.atlas.engineer=
 + It will tell you where it has dumped the certificates, these are to
   be used in the Nginx configuration
-+ Start Nginx =service start nginx=
++ Start Nginx =service nginx start=
 **** Renew the SSL Certificate
 + make sure to stop Nginx
 + =sudo certbot renew --dry-run=
