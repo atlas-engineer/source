@@ -5,7 +5,8 @@
    :caveman2
    :source.config
    :source.view
-   :crane)
+   :mito
+   :sxql)
   (:import-from
    :cl-markup
    :markup)
@@ -59,9 +60,8 @@
                (:button :type "submit" :class "pure-button" "Submit"))))))
 
 (defroute ("/login" :method :POST) (&key |username| |password|)
-  (let ((user (crane:single 'user
-                            :username |username|
-                            :password (hash-password |password|))))
+  (let ((user (find-user :username |username|
+                         :password (hash-password |password|))))
     (if user
         (progn
           (setf (gethash :logged-in *session*) t)
@@ -104,7 +104,7 @@
       (:h1 "Repository created.")))))
 
 (defroute "/view/repository/:repository-name" (&key repository-name)
-  (let* ((repository (crane:single 'repository :name repository-name))
+  (let* ((repository (find-repository :name repository-name))
          (repository-public? (get-repository-visibility repository))
          (logged-in (gethash :logged-in *session*)))
     (if (or repository-public? logged-in)
@@ -155,7 +155,7 @@
 
 (defroute ("/account" :method :GET) ()
   (with-logged-in
-    (let ((user (crane:single 'user :email (gethash :email *session*))))
+    (let ((user (find-dao 'user :email (gethash :email *session*))))
       (render-page
        (cl-markup:markup
         (:h1 "My Account")
@@ -177,13 +177,13 @@
                                            |password|
                                            |current-password|)
   (with-logged-in
-    (let ((user (crane:single 'user :email (gethash :email *session*))))
+    (let ((user (find-dao 'user :email (gethash :email *session*))))
       (if (equalp (password user) (hash-password |current-password|))
           (progn
             (unless (str:emptyp |public-key|) (setf (public-key user) |public-key|))
             (unless (str:emptyp |email|) (setf (email user) |email|))
             (unless (str:emptyp |password|) (setf (password user) (hash-password |password|)))
-            (crane:save user)
+            (save-dao user)
             (update-authorized-keys)
             (render-page
              (cl-markup:markup

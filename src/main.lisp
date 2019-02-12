@@ -16,6 +16,7 @@
 
 (defun start (&rest args &key server port debug &allow-other-keys)
   (declare (ignore server port debug))
+  (source.web::connect-and-migrate)
   (when *handler*
     (restart-case (error "Server is already running.")
       (restart-server ()
@@ -25,6 +26,7 @@
         (apply #'clackup *appfile-path* args)))
 
 (defun stop ()
+  (source.web::disconnect)
   (prog1
       (clack:stop *handler*)
     (setf *handler* nil)))

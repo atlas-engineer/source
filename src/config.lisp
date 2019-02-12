@@ -71,16 +71,6 @@
 (defconfig |test|
   '())
 
-(crane:setup
- :migrations-directory
- (asdf:system-relative-pathname :source #p"migrations/")
- :databases
- (list :main
-       (list :type :sqlite3
-             :name *database-path*)))
-
-(crane:connect)
-
 (defun config (&optional key)
   (envy:config #.(package-name *package*) key))
 

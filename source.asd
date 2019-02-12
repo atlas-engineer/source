@@ -17,7 +17,7 @@
                :str
                :alexandria
                :flexi-streams
-               :crane)
+               :mito)
   :components ((:module "src"
                 :components
                 ((:file "main" :depends-on ("config" "view" "db"))

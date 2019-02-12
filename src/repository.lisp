@@ -1,15 +1,11 @@
 ;;; repository.lisp --- classes and functions for creation and
 ;;; management of repositories. Security considerations should be made
-;;; for where the user can read and write to to protect the system
+;;; for where the user can read and write to protect the system.
 
 (in-package :source.web)
 
 (defun create-repository (name public)
-  (crane:save
-   (crane:create
-    'repository
-    :name name
-    :public (if public 1 0)))
+  (make-repository name :public (if public 1 0))
   (let ((repository-path (merge-pathnames name source.config:*repository-directory*))
         (public-repository-path
           (concatenate 'string
@@ -46,14 +42,14 @@
      (list "chmod" "a+x" hook-path))))
 
 (defun delete-repository (name)
-  (let* ((repository (crane:single 'repository :name name))
+  (let* ((repository (find-dao 'repository :name name))
          (repository-path (merge-pathnames name source.config:*repository-directory*))
          (repository-public? (public repository))
          (public-repository-path
            (concatenate 'string
                        (uiop:unix-namestring source.config:*public-repository-directory*)
                        "./" name)))
-    (crane:del repository)
+    (delete-dao repository)
     (delete-repository-folder repository-path)
     (when repository-public? (delete-repository-symlink public-repository-path))))
 
@@ -67,9 +63,8 @@
   (uiop:run-program (list "unlink" path) :ignore-error-status t))
 
 (defun list-repositories (public)
-  (crane:filter
-   'repository
-   (:= :public (if public 1 0))))
+  (select-dao 'repository
+    (where (:= :public (if public 1 0)))))
 
 (defun get-repository-visibility (repository)
   (when repository
