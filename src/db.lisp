@@ -1,58 +1,25 @@
 (in-package :source.web)
 
-(deftable repository ()
-  ((name
-    :col-type :text
-    :accessor name)
-   (public
-    :col-type :integer
-    :accessor public)))
+(export '(repository
+          make-repository
+          find-repository
+          select-repositories
+          user
+          create-account
+          username
+          password
+          email))
 
-(defmethod print-object ((obj repository) stream)
-  (print-unreadable-object (obj stream :type t)
-    (with-accessors ((id object-id)
-                     (name name)
-                     (public public))
-        obj
-      (format stream "~a ~a, public? ~a" id name public))))
-
-(defun make-repository (name &key public)
-  (create-dao 'repository :name name :public public))
-
-(defun find-repository (&key name)
-  (find-dao 'repository :name name))
-
-
-(deftable user ()
-  ((username
-    :col-type :text
-    :accessor username)
-   (password
-    :col-type :text
-    :accessor password)
-   (email
-    :col-type :text
-    :accessor email)
-   (public-key
-    :col-type (or :text :null)
-    :accessor public-key)))
-
-(defmethod print-object ((user user) stream)
-  (print-unreadable-object (user stream :type t)
-    (with-accessors ((id object-id)
-                     (username username))
-        user
-      (format stream "~a ~a" id username))))
-
-(defun find-user (&key username password)
-  (find-dao 'user :username username :password password))
+;TODO: merge with configuration system.
+(defparameter *db-name* #P"database.db"
+  "DB name. Needed to be mocked in unit tests")
 
 (defun connect ()
   "Connect to the DB.
    Get the connection with mito:*connection*."
   (mito:connect-toplevel :sqlite3
                          ;; TODO: use configuration system.
-                         :database-name (merge-pathnames #p"database.db"
+                         :database-name (merge-pathnames *db-name*
                                                          source.config:*application-root*)))
 
 (defun disconnect ()
@@ -86,6 +53,64 @@
    (ironclad:digest-sequence
     :sha256
     (ironclad:ascii-string-to-byte-array password))))
+
+;;;
+;;; Models.
+;;;
+
+(deftable repository ()
+  ((name
+    :col-type :text
+    :accessor name)
+   (public
+    :col-type :integer
+    :accessor public)))
+
+(defmethod print-object ((obj repository) stream)
+  (print-unreadable-object (obj stream :type t)
+    (with-accessors ((id object-id)
+                     (name name)
+                     (public public))
+        obj
+      (format stream "~a ~a, public? ~a" id name public))))
+
+(defun make-repository (name &key public)
+  "Make and save."
+  (create-dao 'repository :name name :public (if public 1 0)))
+
+(defun find-repository (&key name)
+  (find-dao 'repository :name name))
+
+(defun select-repositories (&key name)
+  (if name
+      (select-dao 'repository
+        (where (:= :name name)))
+      (select-dao 'repository)))
+
+
+(deftable user ()
+  ((username
+    :col-type :text
+    :accessor username)
+   (password
+    :col-type :text
+    :accessor password)
+   (email
+    :col-type :text
+    :accessor email)
+   (public-key
+    :col-type (or :text :null)
+    :accessor public-key)))
+
+(defmethod print-object ((user user) stream)
+  (print-unreadable-object (user stream :type t)
+    (with-accessors ((id object-id)
+                     (username username))
+        user
+      (format stream "~a ~a" id username))))
+
+(defun find-user (&key username password)
+  (find-dao 'user :username username :password password))
 
 (defun create-account (username password email)
   (create-dao 'user
