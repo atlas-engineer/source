@@ -68,10 +68,10 @@ or
 (test create-user
   (with-empty-db
     (is (= 0
-           (length (select-dao 'user))))
+           (count-dao 'user)))
     (let ((user (create-account "usertest" "pwd" "test@test.test")))
       (is (= 1
-             (length (select-dao 'user))))
+             (count-dao 'user)))
       (is (not (equal "pwd"
                       (password user)))
           "The password is hashed"))))
