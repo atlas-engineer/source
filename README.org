@@ -257,6 +257,11 @@ To use FCGI configuration instead:
 + make sure to stop Nginx
 + =sudo certbot renew --dry-run=
 + restart Nginx
+**** Set-Up Automatic Renewal
++ =service nginx stop && certbot renew --quiet && service nginx start=
+Edit the crontab, and run monthly.
++ =@monthly service nginx stop && certbot renew --quiet && service nginx start=
+
 *** Run from Source
 In a new Terminal execute the following:
 
