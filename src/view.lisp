@@ -24,8 +24,7 @@
   (encode-json object))
 
 (defparameter menu-links
-  (quote (("Index" . "/")
-          ("Github" . "https://github.com/atlas-engineer/"))))
+  (quote (("Index" . "/"))))
 
 (defparameter menu-links-logged-out
   (quote (("Login" . "/login"))))
