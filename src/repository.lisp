@@ -69,3 +69,11 @@
 (defun get-repository-visibility (repository)
   (when repository
     (if (equal (public repository) 1) t nil)))
+
+(defun get-repository-readme (name)
+  (let* ((repository-path (merge-pathnames name source.config:*repository-directory*)))
+    (uiop:run-program
+     (list "sh" "-c"
+           (format nil "cd ~a && git show master:README.org | pandoc -f org -t html" repository-path))
+     :output :string
+     :ignore-error-status t)))
