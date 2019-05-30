@@ -235,7 +235,7 @@ http {
 To use FCGI configuration instead:
 
 #+NAME: fcgi
-#+BEGIN_SRC text
+#+BEGIN_SRC nginx
 
         location / {
             include /usr/local/etc/nginx/fastcgi_params;
