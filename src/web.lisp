@@ -111,8 +111,8 @@
         (render-page
          (cl-markup:markup
           (:h1 (name repository))
-          (:h2 "URL")
-          (:p (if logged-in
+          (:p (:b "URL: ")
+              (if logged-in
                   (concatenate 'string
                                source.config:*git-url-base*
                                (name repository))
