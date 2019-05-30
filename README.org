@@ -85,7 +85,7 @@ change, and their defaults.
 #+END_SRC
 
 * How to manually make a repository on a remote server
-+ Copy SSH keys to ~/.ssh/authorized_keys
++ Copy SSH keys to =~/.ssh/authorized_keys=
 ** Creating a Repository
 + =su user git=
 + =mkdir -p /home/git/repository.git=
