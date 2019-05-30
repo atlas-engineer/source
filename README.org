@@ -94,19 +94,19 @@ change, and their defaults.
 + Your remote will be ssh://git@source.atlas.engineer/home/git/path.git
 
 * Deployment
-
 ** FreeBSD Deployment
 1. =pkg install screen=
-2. =pkg install sqlite3=
-3. =pkg install nginx=
-4. =pkg install py27-certbot=
-5. =pkg install sbcl-1.4.9,1=
-6. =pkg install fcgi-devkit-2.4.0_5=
-7. =pkg install git=
-8. =adduser git=
+2. =pkg install hs-pandoc=
+3. =pkg install sqlite3=
+4. =pkg install nginx=
+5. =pkg install py27-certbot=
+6. =pkg install sbcl-1.4.9,1=
+7. =pkg install fcgi-devkit-2.4.0_5=
+8. =pkg install git=
+9. =adduser git=
    + Create user with default settings
-9. Create folder =public= in the =git= user home directory
-10. For all public repositories you will have to enable the Git sample
+10. Create folder =public= in the =git= user home directory
+11. For all public repositories you will have to enable the Git sample
     post-update hook.
 
 *** Port SBCL Installation
