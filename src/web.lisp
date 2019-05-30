@@ -127,6 +127,7 @@
                                                "/delete/repository/confirm/"
                                                (name repository))
                             "Delete Repository"))))))
+          (:hr)
           (:div (markup:raw (get-repository-readme repository-name)))
           (:div (:h2 "Contribute:")
                 (:p "All contributions and patches are accepted via
