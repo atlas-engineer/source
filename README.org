@@ -235,11 +235,13 @@ http {
 To use FCGI configuration instead:
 
 #+NAME: fcgi
-#+BEGIN_SRC
+#+BEGIN_SRC nginx
+
         location / {
             include /usr/local/etc/nginx/fastcgi_params;
             fastcgi_pass  127.0.0.1:9000;
         }
+
 #+END_SRC
 
 
